@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: express-api-deployment-local
+  labels:
+    app: express-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: express-api
+  template:
+    metadata:
+      labels:
+        app: express-api
+    spec:
+      containers:
+      - name: express-api
+        image: localhost:32000/express-api:local
+        ports:
+        - containerPort: 3000
+        env:
+        - name: MESSAGE
+          value: "Hej Från kubernetes yml"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: express-api-service
+spec:
+  type: NodePort
+  selector:
+    app: express-api
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+      nodePort: 32003
